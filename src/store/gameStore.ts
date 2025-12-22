@@ -252,7 +252,7 @@ export const useGameStore = create<GameStore>()(
           foundation: newFoundation,
           score: newScore,
           gameWon,
-          isPlaying: true,
+          isPlaying: !gameWon,
           isPaused: false // Auto-resume on deal
       });
   },

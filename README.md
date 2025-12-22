@@ -1,5 +1,7 @@
 # Spider Solitaire
 
+![Spider Solitaire](public/spider.svg)
+
 A modern, open-source implementation of the classic Spider Solitaire card game, built with React, TypeScript, and Tailwind CSS.
 
 ## Features
