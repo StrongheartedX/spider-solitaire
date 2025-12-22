@@ -288,14 +288,14 @@ export const useGameStore = create<GameStore>()(
   },
 
   showHint: () => {
-      const { tableau, stock, timer } = get();
+      const { tableau, stock, moves } = get();
       
-      // Clear existing hint and add 10s penalty
+      // Clear existing hint and add 1 move penalty
       set({ 
         hintSource: undefined, 
         hintDeck: false, 
         hintNewGame: false,
-        timer: timer + 10
+        moves: moves + 1
       });
 
       let bestMove: { source: { pileIndex: number, cardIndex: number }, target: { pileIndex: number } } | null = null;
