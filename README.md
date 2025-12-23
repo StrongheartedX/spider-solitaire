@@ -70,7 +70,7 @@ The build artifacts will be stored in the `dist/` directory.
 
 ## Docker Deployment
 
-This application can be easily deployed using Docker. The image is automatically built and pushed to Docker Hub on every update to the main branch.
+This application can be easily deployed using Docker. The image is automatically built and pushed to Docker Hub and GitHub Container Registry (GHCR) on every update to the main branch.
 
 ### Using Docker Compose (Recommended)
 
@@ -85,15 +85,25 @@ A `compose.yaml` file is included in the repository for quick deployment.
 
 ### Using Docker CLI
 
-You can also run the container directly using the Docker CLI:
+You can also run the container directly using the Docker CLI.
 
+**From Docker Hub:**
 ```bash
 docker run -d -p 8080:80 --name spider-solitaire lklynet/spider-solitaire:latest
 ```
 
+**From GitHub Container Registry:**
+```bash
+docker run -d -p 8080:80 --name spider-solitaire ghcr.io/lklynet/spider-solitaire:latest
+```
+
 ### Automated Builds
 
-This repository is configured with GitHub Actions to automatically build and push the Docker image to Docker Hub (`lklynet/spider-solitaire`) whenever changes are pushed to the `main` branch.
+This repository is configured with GitHub Actions to automatically build and push the Docker image to:
+- Docker Hub: `lklynet/spider-solitaire`
+- GitHub Container Registry: `ghcr.io/lklynet/spider-solitaire`
+
+These builds occur whenever changes are pushed to the `main` branch.
 
 ## Open Source
 
