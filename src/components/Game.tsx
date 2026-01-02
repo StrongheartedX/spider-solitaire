@@ -98,28 +98,51 @@ export const Game: React.FC = () => {
     setSelectedCardIndex(null);
   };
 
+  const confirmAction = (callback: () => void) => {
+    if (store.moves > 0 && !store.gameWon) {
+        if (window.confirm('Are you sure? Current game progress will be lost.')) {
+            callback();
+        }
+    } else {
+        callback();
+    }
+  };
+
   const handleNewGame = () => {
-      // Record loss if game was in progress and not won? 
-      // Simplified: Just start new game
-      if (store.isPlaying && !store.gameWon) {
-          statsStore.recordLoss();
-      }
-      
-      store.initializeGame();
-      setSelectedPileIndex(null);
-      setSelectedCardIndex(null);
+      confirmAction(() => {
+        // Record loss if game was in progress and not won? 
+        // Simplified: Just start new game
+        if (store.isPlaying && !store.gameWon) {
+            statsStore.recordLoss();
+        }
+        
+        store.initializeGame();
+        setSelectedPileIndex(null);
+        setSelectedCardIndex(null);
+      });
   };
 
   const handleDailyGame = () => {
-      if (store.isPlaying && !store.gameWon) {
-          statsStore.recordLoss();
-      }
+      confirmAction(() => {
+        if (store.isPlaying && !store.gameWon) {
+            statsStore.recordLoss();
+        }
 
-      const todaySeed = format(new Date(), 'yyyy-MM-dd');
-      store.initializeGame(todaySeed);
-      setSelectedPileIndex(null);
-      setSelectedCardIndex(null);
+        const todaySeed = format(new Date(), 'yyyy-MM-dd');
+        store.initializeGame(todaySeed);
+        setSelectedPileIndex(null);
+        setSelectedCardIndex(null);
+      });
   };
+
+  const handleRestart = () => {
+      confirmAction(() => {
+          store.restartGame();
+          setSelectedPileIndex(null);
+          setSelectedCardIndex(null);
+      });
+  };
+
 
   const isDailyCompleted = React.useMemo(() => {
     const today = format(new Date(), 'yyyy-MM-dd');
@@ -193,7 +216,7 @@ export const Game: React.FC = () => {
         isPaused={store.isPaused}
         canUndo={store.canUndo()}
         onUndo={store.undo}
-        onRestart={store.restartGame}
+        onRestart={handleRestart}
         onNewGame={handleNewGame}
         onToggleTimer={store.toggleTimer}
         onTogglePause={store.togglePause}

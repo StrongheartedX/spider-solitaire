@@ -29,7 +29,7 @@ export const Stock: React.FC<StockProps> = ({ stock, onDeal, isHinted }) => {
             "relative w-24 h-36 cursor-pointer group transition-all duration-300",
             isHinted && "ring-4 ring-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.5)] scale-105"
         )}
-        onClick={onDeal}
+        onDoubleClick={onDeal}
     >
         {/* Render a few cards to show stack effect */}
         {stock.slice(0, 3).map((_, i) => (

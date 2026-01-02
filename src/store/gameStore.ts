@@ -290,14 +290,6 @@ export const useGameStore = create<GameStore>()(
   showHint: () => {
       const { tableau, stock, moves } = get();
       
-      // Clear existing hint and add 1 move penalty
-      set({ 
-        hintSource: undefined, 
-        hintDeck: false, 
-        hintNewGame: false,
-        moves: moves + 1
-      });
-
       let bestMove: { source: { pileIndex: number, cardIndex: number }, target: { pileIndex: number } } | null = null;
       let bestScore = -1;
 
@@ -324,6 +316,12 @@ export const useGameStore = create<GameStore>()(
                   
                   // Case 1: Target is Empty Pile
                   if (toPile.cards.length === 0) {
+                      // Prevent moving entire pile to empty pile (useless move)
+                      if (i === 0) continue;
+
+                      // Prevent breaking a same-suit run just to move to an empty pile
+                      if (cardAbove && cardAbove.faceUp && cardAbove.suit === card.suit) continue;
+
                       // Moving to empty pile is valid but low priority unless it helps reveal/sort
                       score = 10;
                   } else {
@@ -378,18 +376,32 @@ export const useGameStore = create<GameStore>()(
           }
       }
       
+      let newMoves = moves;
+      let hintDeck = false;
+      let hintNewGame = false;
+      let hintSource: { pileIndex: number; cardIndex: number; } | undefined = undefined;
+
       if (bestMove) {
-          set({ 
-              hintSource: bestMove.source
-          });
+          hintSource = bestMove.source;
+          newMoves = moves + 1;
       } else {
           // No moves found on tableau
           if (stock.length > 0) {
-              set({ hintDeck: true });
+              hintDeck = true;
+              // Dealing is available and is the last option (since no moves on tableau)
+              // Do NOT increment moves
           } else {
-              set({ hintNewGame: true });
+              hintNewGame = true;
+              newMoves = moves + 1;
           }
       }
+
+      set({ 
+        hintSource, 
+        hintDeck, 
+        hintNewGame,
+        moves: newMoves
+      });
       
       // Auto-clear hint after 2 seconds
       setTimeout(() => {
